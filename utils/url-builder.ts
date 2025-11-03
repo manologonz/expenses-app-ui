@@ -1,4 +1,3 @@
-import { ExpenseQuery, TagQuery, ReportQuery } from "./types";
 class UrlBuilder {
     private baseUrl: string;
     private path: string = "";
@@ -24,15 +23,15 @@ class UrlBuilder {
         return this.concatenate("/login");
     }
 
-    expenses(id?: number, query?: ExpenseQuery) {
+    expenses(id?: number) {
         return this.concatenate("/expense");
     }
 
-    tags(id?: number, query?: TagQuery) {
+    tags(id?: number) {
         return this.concatenate("/tag");
     }
 
-    reports(id: number, query?: ReportQuery) {
+    reports(id: number) {
         return this.concatenate("/report");
     }
 

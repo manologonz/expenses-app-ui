@@ -1,5 +1,5 @@
 export type Props = {};
-import LoginForm from "@/app/components/forms/LoginForm";
+import LoginForm from "@/components/forms/LoginForm";
 import Image from "next/image";
 
 const Login: React.FC<Props> = () => {

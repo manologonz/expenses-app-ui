@@ -1,5 +1,5 @@
 import React from "react";
-import FieldErrors from "./FieldErrors";
+import ErrorBox from "./ErrorBox";
 
 export type Props = {
     autocomplete?: string;
@@ -28,7 +28,7 @@ const TextField: React.FC<Props> = ({
                 {label}
             </label>
             <input
-                className="h-[35px] px-2.5 py[2px] block w-full border border-greenjade rounded-[5px] text-[16px]"
+                className="h-10 px-2.5 py-0.5 block w-full border border-greenjade rounded-[5px] text-[16px]"
                 autoComplete={autocomplete}
                 id={id}
                 type={type}
@@ -36,7 +36,7 @@ const TextField: React.FC<Props> = ({
                 value={value}
                 onChange={onChange}
             />
-            {!!errors?.length && <FieldErrors errors={errors} />}
+            {!!errors?.length && <ErrorBox errors={errors} />}
         </div>
     );
 };
