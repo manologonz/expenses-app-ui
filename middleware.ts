@@ -5,16 +5,12 @@ import { NextResponse } from "next/server";
 export default withAuth(
     // Middleware function that runs for authenticated users
     function middleware(req) {
-        console.log("Authenticated user accessing:", req.nextUrl.pathname);
-        console.log("User token:", req.nextauth.token);
-
         // Add custom logic here (e.g., role-based access control)
         const token = req.nextauth.token;
-        const path = req.nextUrl.pathname;
+        const { pathname, origin } = req.nextUrl;
 
-        // Example: Restrict admin routes
-        if (path.startsWith("/admin") && token?.role !== "admin") {
-            return NextResponse.redirect(new URL("/unauthorized", req.url));
+        if (pathname === "/") {
+            return NextResponse.redirect(`${origin}/dashboard`);
         }
 
         return NextResponse.next();
@@ -35,5 +31,12 @@ export default withAuth(
 
 export const config = {
     // Protect these routes with authentication
-    matcher: ["/", "/dashboard", "/expense*", "/tag*", "/report*", "/budget*"],
+    matcher: [
+        "/",
+        "/dashboard",
+        "/expense/:path*",
+        "/tag/:path*",
+        "/report/:path*",
+        "/budget/:path*",
+    ],
 };
