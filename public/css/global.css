@@ -1,0 +1,40 @@
+@import "tailwindcss";
+
+@theme {
+    --color-redbrick: #bc4b51;
+    --color-greensage: #8cb369;
+    --color-orangetangerine: #f4a259;
+    --color-greenjade: #5b8e7d;
+    --color-yellowbutter: #f4e285;
+
+    --font-family-tasa-orbiter: var(--font-tasa-orbiter);
+}
+
+body {
+    font-family: var(--font-tasa-orbiter);
+}
+
+.loader {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background-color: #fff;
+    box-shadow: 32px 0 #fff, -32px 0 #fff;
+    position: relative;
+    animation: flash 0.5s ease-out infinite alternate;
+}
+
+@keyframes flash {
+    0% {
+        background-color: #fff2;
+        box-shadow: 32px 0 #fff2, -32px 0 #fff;
+    }
+    50% {
+        background-color: #fff;
+        box-shadow: 32px 0 #fff2, -32px 0 #fff2;
+    }
+    100% {
+        background-color: #fff2;
+        box-shadow: 32px 0 #fff, -32px 0 #fff2;
+    }
+}
