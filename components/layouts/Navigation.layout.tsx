@@ -1,7 +1,15 @@
 "use client";
 
 import React, { useState } from "react";
-import Image from "next/image";
+import SideMenu from "@/components/layouts/SideMenu";
+import { usePathname } from "next/navigation";
+import { Menu } from "lucide-react";
+import { LayoutDashboard } from "lucide-react";
+import { ReceiptText } from "lucide-react";
+import { Tags } from "lucide-react";
+import { ChartPie } from "lucide-react";
+import { BookOpenCheck } from "lucide-react";
+import { getServerSession } from "next-auth";
 
 export type Props = {
     children: React.ReactNode;
@@ -10,6 +18,7 @@ export type Props = {
 
 const NavigationLayout: React.FC<Props> = ({ children, title }) => {
     const [menuOpen, setMenuOpen] = useState(false);
+    const currentPath = usePathname();
 
     return (
         <div className="relative">
@@ -24,13 +33,12 @@ const NavigationLayout: React.FC<Props> = ({ children, title }) => {
                         setMenuOpen(!menuOpen);
                     }}
                 >
-                    <Image
-                        className="h-6 w-[25px]"
-                        src="/images/icons/nav-icon-white.svg"
-                        alt="open menu"
-                        width="40"
-                        height="40"
-                    ></Image>
+                    <Menu
+                        width="25px"
+                        height="25px"
+                        color="#808080"
+                        strokeWidth={3}
+                    />
                 </button>
                 <div className="w-full flex justify-center">
                     <span className="uppercase font-bold text-[#808080]">
@@ -38,30 +46,40 @@ const NavigationLayout: React.FC<Props> = ({ children, title }) => {
                     </span>
                 </div>
             </nav>
-            <aside
-                id="sidebar-menu"
-                aria-label="sidebar"
-                className={`fixed top-0 left-0 z-40 transition-transform w-full h-screen ${
-                    !menuOpen ? "-translate-x-full" : ""
-                } shadow`}
-            >
-                <div className="relative w-[80%] h-full px-3 py-2 bg-greenjade shadow-[0_5px_20px_rgba(0,0,0,0.70)]">
-                    <div className="absolute flex justify-end top-3 right-3">
-                        <button
-                            onClick={() => {
-                                setMenuOpen(!menuOpen);
-                            }}
-                        >
-                            <Image
-                                src="/images/icons/sidebar-close.svg"
-                                height={22}
-                                width={22}
-                                alt="sidebar close"
-                            />
-                        </button>
-                    </div>
-                </div>
-            </aside>
+            <SideMenu
+                open={menuOpen}
+                handleOpen={() => {
+                    setMenuOpen(!menuOpen);
+                }}
+                currentPath={currentPath}
+                navItems={[
+                    {
+                        title: "Dashboard",
+                        path: "/dashboard",
+                        icon: <LayoutDashboard color="#fff" />,
+                    },
+                    {
+                        title: "Expenses",
+                        path: "/expenses",
+                        icon: <ReceiptText color="#fff" />,
+                    },
+                    {
+                        title: "Tags",
+                        path: "/tags",
+                        icon: <Tags color="#fff" />,
+                    },
+                    {
+                        title: "Budgets",
+                        path: "/budgets",
+                        icon: <ChartPie color="#fff" />,
+                    },
+                    {
+                        title: "Reports",
+                        path: "/reports",
+                        icon: <BookOpenCheck color="#fff" />,
+                    },
+                ]}
+            />
             <div className="px-2 py-2">{children}</div>
         </div>
     );

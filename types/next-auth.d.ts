@@ -12,6 +12,8 @@ declare module "next-auth" {
         active: boolean;
         token?: string;
         refreshToken: string;
+        accessToken: string;
+        expiresIn: string;
     }
 
     interface Session {
@@ -19,7 +21,7 @@ declare module "next-auth" {
             id: string;
             firstName: string;
             lastName: string;
-            useramem: string;
+            username: string;
             role: string;
             email: string;
             active: boolean;
@@ -34,7 +36,7 @@ declare module "next-auth/jwt" {
         id: string;
         firstName: string;
         lastName: string;
-        useramem: string;
+        username: string;
         role: string;
         email: string;
         active: boolean;
