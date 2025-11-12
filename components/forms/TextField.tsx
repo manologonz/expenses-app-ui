@@ -31,7 +31,7 @@ const TextField: React.FC<Props> = ({
     onChange,
 }) => {
     return (
-        <div className={`block py-2.5 ${containerClass}`}>
+        <div className={`block py-2.5 ${containerClass ? containerClass : ""}`}>
             <label
                 htmlFor={name}
                 className={`block w-full ${hideLabel ? "hidden" : ""}`}
@@ -39,7 +39,9 @@ const TextField: React.FC<Props> = ({
                 {label}
             </label>
             <input
-                className={`h-10 px-2.5 py-0.5 block w-full border border-greenjade rounded-[5px] text-[16px] ${inputClass}`}
+                className={`h-10 px-2.5 py-0.5 block w-full border border-greenjade rounded-[5px] text-[16px] ${
+                    inputClass ? inputClass : ""
+                }`}
                 autoComplete={autocomplete}
                 id={id}
                 type={type}

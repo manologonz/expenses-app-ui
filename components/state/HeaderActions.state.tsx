@@ -10,6 +10,7 @@ import React, {
 
 export type THeaderActions = {
     create: boolean;
+    tag: boolean;
 };
 
 const Context = createContext<
@@ -17,14 +18,17 @@ const Context = createContext<
         data: THeaderActions,
         setActions?: Dispatch<SetStateAction<THeaderActions>>
     ]
->([{ create: false }]);
+>([{ create: false, tag: false }]);
 
 export type Props = {
     children: React.ReactNode;
 };
 
 export const HeaderActionsState: React.FC<Props> = ({ children }) => {
-    const [theme, setActions] = useState<THeaderActions>({ create: false });
+    const [theme, setActions] = useState<THeaderActions>({
+        create: false,
+        tag: false,
+    });
 
     return (
         <Context.Provider value={[theme, setActions]}>

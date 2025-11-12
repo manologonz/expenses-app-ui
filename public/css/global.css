@@ -10,6 +10,32 @@
     --font-family-tasa-orbiter: var(--font-tasa-orbiter);
 }
 
+@layer utilities {
+    .no-scroll::-webkit-scrollbar {
+        display: none;
+    }
+    .no-scroll {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+
+    .no-ui {
+        appearance: none;
+    }
+
+    /* Remove number arrows for WebKit browsers */
+    .no-ui::-webkit-inner-spin-button,
+    .no-ui::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    /* Remove number arrows for Firefox */
+    .no-ui[type="number"] {
+        -moz-appearance: textfield;
+    }
+}
+
 body {
     font-family: var(--font-tasa-orbiter);
 }

@@ -16,7 +16,7 @@ export type Props = {
     children: React.ReactNode;
     title: string;
     onCreate?: () => void;
-    useCreate: boolean;
+    useCreate?: boolean;
 };
 
 const NavigationLayout: React.FC<Props> = ({ children, title, useCreate }) => {

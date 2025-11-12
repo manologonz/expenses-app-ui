@@ -6,6 +6,9 @@ import DatePicker from "@/components/forms/DatePicker";
 import SelectField, { SelectOption } from "@/components/forms/SelectField";
 import { Funnel } from "lucide-react";
 import { userHeaderActionState } from "@/components/state/HeaderActions.state";
+import InteractiveModal from "@/components/common/InteractiveModal";
+import ExpenseForm from "@/components/forms/ExpenseForm";
+import TagSelection from "@/components/forms/TagSelection";
 
 export type Props = {};
 
@@ -40,7 +43,7 @@ const ExpensesHome: React.FC<Props> = ({}) => {
     ];
 
     return (
-        <div className="w-full">
+        <div className="w-full h-full">
             <div className="w-full flex items-center gap-2">
                 <TextField
                     containerClass="grow"
@@ -52,7 +55,7 @@ const ExpensesHome: React.FC<Props> = ({}) => {
                         setFilters({ ...filters, search: event.target.value });
                     }}
                     hideLabel
-                ></TextField>
+                />
                 <button
                     type="button"
                     className={`h-full cursor-pointer rounded-[5px] px-1 ${
@@ -112,6 +115,16 @@ const ExpensesHome: React.FC<Props> = ({}) => {
                     />
                 </div>
             </div>
+            <InteractiveModal modalKey="create">
+                <ExpenseForm />
+            </InteractiveModal>
+            <InteractiveModal modalKey="tag">
+                <TagSelection
+                    onTagSelction={(tags) => {
+                        console.log(tags);
+                    }}
+                />
+            </InteractiveModal>
         </div>
     );
 };
