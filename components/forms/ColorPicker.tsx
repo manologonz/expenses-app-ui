@@ -13,11 +13,12 @@ const BlockPicker = dynamic(
 type Props = {
     label: string;
     name: string;
-    hideLabel: boolean;
+    hideLabel?: boolean;
     value: string;
     id?: string;
     onChange: (color: string) => void;
     inputClass?: string;
+    labelClass?: string;
 };
 
 const ColorPicker: React.FC<Props> = ({
@@ -28,6 +29,7 @@ const ColorPicker: React.FC<Props> = ({
     onChange,
     value,
     inputClass,
+    labelClass,
 }) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef(null);
@@ -37,6 +39,7 @@ const ColorPicker: React.FC<Props> = ({
     const handleOnChange: ColorChangeHandler = (color) => {
         setColor(color.hex);
         onChange(color.hex);
+        setOpen(false);
     };
 
     useEffect(() => {
@@ -60,13 +63,12 @@ const ColorPicker: React.FC<Props> = ({
 
     return (
         <div ref={containerRef} className="relative py-2.5 px-1">
-            {hideLabel ? (
-                <FieldLabel
-                    htmlFor={id || "input-" + name}
-                    text={label}
-                    hidden={hideLabel}
-                />
-            ) : null}
+            <FieldLabel
+                htmlFor={id || "input-" + name}
+                text={label}
+                hidden={!!hideLabel}
+                className={labelClass}
+            />
             <div
                 id={id || name}
                 onClick={() => {
