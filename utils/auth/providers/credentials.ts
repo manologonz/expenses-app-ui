@@ -36,10 +36,6 @@ export const credentialsProviderConfig = CredentialsProvider({
 
             // If authentication is successful, return user object
             if (response.data && response.status === 200 && refreshCookie) {
-                const expirationDate = dayjs(
-                    response.data.accessTokenExpiration
-                );
-
                 const user = {
                     id: response.data.user.id as string,
                     firstName: response.data.user.firstName as string,

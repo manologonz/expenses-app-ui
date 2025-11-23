@@ -25,8 +25,9 @@ export const authOptions: NextAuthOptions = {
         async session({ session, token }) {
             // Expose safe user data (but not cookie)
             session.user = token;
-            session.accessToken = token.accessToken;
+            session.apiToken = token.accessToken;
             session.error = token.error;
+
             return session;
         },
     },
