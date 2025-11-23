@@ -19,6 +19,10 @@ class UrlBuilder {
         return this.concatenate("/auth");
     }
 
+    refresh() {
+        return this.concatenate("/refresh");
+    }
+
     login() {
         return this.concatenate("/login");
     }
