@@ -1,7 +1,8 @@
 import axios from "axios";
-import urlBuilder from "../url-builder";
+import { UrlBuilder } from "../api/url-builder";
 export async function refreshAccessToken(token: any) {
     try {
+        const urlBuilder = new UrlBuilder();
         const url = urlBuilder.v1().auth().refresh().build();
         const tokenResponse = await axios.post(
             url,

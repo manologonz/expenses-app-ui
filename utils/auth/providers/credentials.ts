@@ -1,5 +1,5 @@
 import CredentialsProvider from "next-auth/providers/credentials";
-import urlBuilder from "@/utils/url-builder";
+import { UrlBuilder } from "@/utils/api/url-builder";
 import axios from "axios";
 import dayjs from "dayjs";
 
@@ -24,6 +24,7 @@ export const credentialsProviderConfig = CredentialsProvider({
 
         try {
             // Build the authentication URL using the urlBuilder
+            const urlBuilder = new UrlBuilder();
             const authUrl = urlBuilder.v1().auth().login().build();
 
             // Make API call to authenticate user

@@ -1,17 +1,38 @@
-class UrlBuilder {
+export type ApiType = {
+    local: () => string;
+    external: () => string;
+};
+
+export class UrlBuilder {
     private baseUrl: string;
     private path: string = "";
 
-    constructor() {
-        if (!process.env.EXPENSES_API) {
-            throw new Error("No auth API set");
-        }
+    private apiType: ApiType = {
+        local: () => {
+            return "";
+        },
+        external: () => {
+            if (!process.env.EXPENSES_API) {
+                throw new Error("No auth API set");
+            }
 
-        this.baseUrl = process.env.EXPENSES_API;
+            return process.env.EXPENSES_API;
+        },
+    };
+
+    constructor(type: "local" | "external" = "external") {
+        const getBaseUrl = this.apiType[type];
+
+        this.baseUrl = getBaseUrl();
     }
 
     v1() {
         this.path += "/api/v1";
+        return this;
+    }
+
+    use(customPath: string) {
+        this.path = customPath;
         return this;
     }
 
@@ -27,15 +48,15 @@ class UrlBuilder {
         return this.concatenate("/login");
     }
 
-    expenses(id?: number) {
+    expenses() {
         return this.concatenate("/expense");
     }
 
-    tags(id?: number) {
+    tags() {
         return this.concatenate("/tag");
     }
 
-    reports(id: number) {
+    reports() {
         return this.concatenate("/report");
     }
 
@@ -52,7 +73,3 @@ class UrlBuilder {
         return `${this.baseUrl}${path}`;
     }
 }
-
-const urlBuilder = new UrlBuilder();
-
-export default urlBuilder;
