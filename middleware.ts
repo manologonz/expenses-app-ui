@@ -20,7 +20,7 @@ export default withAuth(
             // This callback determines if the request is authorized
             authorized: ({ token, req }) => {
                 // Return true to allow access, false to redirect to login
-                return !!token; // User must have a token (be logged in)
+                return !!token && token?.error !== "RefreshAccessTokenError"; // User must have a token (be logged in)
             },
         },
         pages: {

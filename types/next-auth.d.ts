@@ -26,6 +26,7 @@ declare module "next-auth" {
             email: string;
             active: boolean;
         };
+        apiToken?: string;
         accessToken?: string;
         error?: string;
     }

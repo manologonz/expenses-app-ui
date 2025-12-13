@@ -9,26 +9,30 @@ import { ReceiptText } from "lucide-react";
 import { Tags } from "lucide-react";
 import { ChartPie } from "lucide-react";
 import { BookOpenCheck } from "lucide-react";
-import { getServerSession } from "next-auth";
+import { Plus } from "lucide-react";
+import { useCrudActions } from "../state/CrudActions.state";
 
 export type Props = {
     children: React.ReactNode;
     title: string;
+    onCreate?: () => void;
+    useCreate?: boolean;
 };
 
-const NavigationLayout: React.FC<Props> = ({ children, title }) => {
+const NavigationLayout: React.FC<Props> = ({ children, title, useCreate }) => {
     const [menuOpen, setMenuOpen] = useState(false);
+    const [headerActions, setActions] = useCrudActions();
     const currentPath = usePathname();
 
     return (
-        <div className="relative">
-            <nav className="h-15 bg-white flex items-center justify-start px-4 py-1 relative">
+        <div className="relative h-full flex flex-col">
+            <nav className="h-15 bg-white flex items-center justify-start px-4 py-1 relative min-h-[60px]">
                 <button
                     data-sidebar-target="sidebar-menu"
                     data-sidebar-toggle="sidebar-menu"
                     aria-controls="sidebar-menu"
                     type="button"
-                    className="mr-5 absolute"
+                    className="mr-5 absolute cursor-pointer"
                     onClick={() => {
                         setMenuOpen(!menuOpen);
                     }}
@@ -45,6 +49,27 @@ const NavigationLayout: React.FC<Props> = ({ children, title }) => {
                         {title}
                     </span>
                 </div>
+                {!!useCreate && (
+                    <button
+                        type="button"
+                        className="mr-5 absolute right-0 cursor-pointer"
+                        onClick={() => {
+                            if (setActions) {
+                                setActions({
+                                    ...headerActions,
+                                    create: true,
+                                });
+                            }
+                        }}
+                    >
+                        <Plus
+                            width="25px"
+                            height="25px"
+                            color="#808080"
+                            strokeWidth={3}
+                        />
+                    </button>
+                )}
             </nav>
             <SideMenu
                 open={menuOpen}
@@ -80,7 +105,9 @@ const NavigationLayout: React.FC<Props> = ({ children, title }) => {
                     },
                 ]}
             />
-            <div className="px-2 py-2">{children}</div>
+            <div className="px-2 py-2 grow overflow-y-scroll no-scroll">
+                {children}
+            </div>
         </div>
     );
 };

@@ -26,18 +26,8 @@ const SideMenu: React.FC<Props> = ({
             onClick={handleOpen}
         >
             <div className="relative w-[80%] h-full py-2 bg-greenjade shadow-[0_5px_20px_rgba(0,0,0,0.70)]">
-                <div className="absolute flex justify-end top-3 right-3">
-                    <button onClick={handleOpen}>
-                        <Suspense
-                            fallback={
-                                <div className="w-full h-12 flex items-center justify-center">
-                                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
-                                </div>
-                            }
-                        >
-                            <AccountCard />
-                        </Suspense>
-                    </button>
+                <div className="flex justify-end top-3 right-3 w-full">
+                    <AccountCard />
                 </div>
                 <div className="pt-10">
                     {navItems.map((item, index) => {
