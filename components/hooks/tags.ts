@@ -89,7 +89,22 @@ export function useTagList() {
 
 export function useTagItem(tagId: number) {
     const tagService = new TagLocalService();
-    const fetcher = () => {};
+    const fetcher = async (): Promise<Tag> => {
+        const response = await tagService.getTag(tagId);
+        return response.data;
+    };
 
-    const { data, isLoading } = useSWR("tag-item", fetcher);
+    const { data, isLoading, mutate, error } = useSWR("tag-item", fetcher);
+
+    const status = error
+        ? ActionStatus.ERROR
+        : isLoading
+        ? ActionStatus.LOADING
+        : ActionStatus.SUCCESS;
+
+    return {
+        data,
+        status,
+        mutate,
+    };
 }

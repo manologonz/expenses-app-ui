@@ -14,6 +14,7 @@ export interface Tag {
     userId: number;
     updatedAt: string;
     createdAt: string;
+    children: Tag[];
 }
 
 export type TagData = {
