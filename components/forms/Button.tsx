@@ -7,6 +7,7 @@ export type InputButtonProps = {
     text: string;
     full?: boolean;
     loading?: boolean;
+    className?: string;
 };
 
 const baseButtonStyles = "px-10 py-2.5 rounded-[5px]";
@@ -25,6 +26,7 @@ const InputButton: React.FC<InputButtonProps> = ({
     variation,
     full,
     loading,
+    className,
 }) => {
     let buttonStyle = "";
 
@@ -53,7 +55,7 @@ const InputButton: React.FC<InputButtonProps> = ({
                 type="submit"
                 className={`hover:cursor-pointer hover:bg-white ease-in-out duration-300 ${baseButtonStyles} ${buttonStyle} ${
                     full ? "w-full" : ""
-                } disable:hover:bg-${variation}`}
+                } disable:hover:bg-${variation} ${className ? className : ""}`}
             >
                 {!!loading ? "Loading..." : text}
             </button>
@@ -61,4 +63,59 @@ const InputButton: React.FC<InputButtonProps> = ({
     );
 };
 
-export { InputButton };
+export type ButtonProps = {
+    id?: string;
+    variation: "redbrick" | "orangetangerine" | "greenjade" | "yellowbutter";
+    text: string;
+    full?: boolean;
+    loading?: boolean;
+    className?: string;
+    onClick: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
+};
+
+const Button: React.FC<ButtonProps> = ({
+    id,
+    text,
+    variation,
+    full,
+    loading,
+    className,
+    onClick,
+}) => {
+    let buttonStyle = "";
+
+    switch (variation) {
+        case "redbrick":
+            buttonStyle = btnRedbrick;
+            break;
+        case "orangetangerine":
+            buttonStyle = btnOrangetangerine;
+            break;
+        case "greenjade":
+            buttonStyle = btnGreenjade;
+            break;
+        case "yellowbutter":
+            buttonStyle = btnYellowButter;
+            break;
+        default:
+            buttonStyle = btnGreenjade;
+    }
+
+    return (
+        <div className={`py-2.5 ${full ? "w-full" : "w-auto"}`}>
+            <button
+                onClick={onClick}
+                disabled={loading}
+                id={id}
+                type="button"
+                className={`hover:cursor-pointer hover:bg-white ease-in-out duration-300 ${baseButtonStyles} ${buttonStyle} ${
+                    full ? "w-full" : ""
+                } disable:hover:bg-${variation} ${className ? className : ""}`}
+            >
+                {!!loading ? "Loading..." : text}
+            </button>
+        </div>
+    );
+};
+
+export { InputButton, Button };

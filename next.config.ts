@@ -5,6 +5,7 @@ const nextConfig: NextConfig = {
     /* config options here */
     env: {
         EXPENSES_API: process.env.EXPENSES_API,
+        APP_DOMAIN: process.env.APP_DOMAIN,
     },
 };
 
