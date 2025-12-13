@@ -1,12 +1,12 @@
 import { isAxiosError } from "axios";
-import { UrlBuilder } from "./url-builder";
+import { ApiType, UrlBuilder } from "./url-builder";
 import { ServiceResponse } from "../types";
 
 export type VersionManger = { [version: `v${number}`]: string };
 
 export default class BaseLocalService {
     protected baseUrl: string;
-    protected urlBuilder = new UrlBuilder("local");
+    protected urlBuilder = new UrlBuilder(ApiType.LOCAL);
 
     private versionManager: VersionManger = {
         v1: this.urlBuilder.v1().build(),
@@ -22,16 +22,18 @@ export default class BaseLocalService {
         this.baseUrl = apiBaseUrl;
     }
 
-    protected handleError<T>(error: unknown): ServiceResponse<T> {
+    handleError<T>(error: unknown): ServiceResponse<T> {
         if (isAxiosError(error)) {
             return {
                 ok: false,
+                status: error.response?.status || 500,
                 error: error.response?.data?.detail,
             };
         }
 
         return {
             ok: false,
+            status: 500,
             error: "Something when't wrong",
         };
     }

@@ -4,14 +4,14 @@ import { Expense } from "@/utils/types";
 import TextField from "./TextField";
 import SelectField from "./SelectField";
 import InteractiveModal from "../common/InteractiveModal";
-import { userHeaderActionState } from "../state/HeaderActions.state";
+import { useCrudActions } from "../state/CrudActions.state";
 
 type Props = {
     data?: Expense;
 };
 
 const ExpenseForm: React.FC<Props> = ({ data }) => {
-    const [actions, setAction] = userHeaderActionState();
+    const [actions, setAction] = useCrudActions();
     const [expense, setExpense] = useState<Omit<Expense, "id">>({
         amount: 0,
         description: "",

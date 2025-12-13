@@ -16,6 +16,12 @@ export interface Tag {
     createdAt: string;
 }
 
+export type TagData = {
+    name: string;
+    color: string;
+    parentId?: number;
+};
+
 export type TagListResponse = {
     count: number;
     hasMore: boolean;
@@ -24,10 +30,26 @@ export type TagListResponse = {
 
 export type ServiceResponse<T> = {
     ok: boolean;
+    status: number;
     data?: T;
     error?: string;
 };
 
 export interface TagCheck extends Tag {
     checked: boolean;
+}
+
+export type TagErrors = {
+    parent: string[];
+    name: string[];
+    color: string[];
+};
+
+export enum ActionStatus {
+    NONE = "NONE",
+    LOADING = "LOADING",
+    LOADING_MORE = "LOADING_MORE",
+    SUCCESS = "SUCCESS",
+    ERROR = "ERROR",
+    REFETCH = "REFETCH",
 }

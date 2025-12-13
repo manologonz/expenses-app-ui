@@ -10,7 +10,7 @@ import { Tags } from "lucide-react";
 import { ChartPie } from "lucide-react";
 import { BookOpenCheck } from "lucide-react";
 import { Plus } from "lucide-react";
-import { userHeaderActionState } from "../state/HeaderActions.state";
+import { useCrudActions } from "../state/CrudActions.state";
 
 export type Props = {
     children: React.ReactNode;
@@ -21,12 +21,12 @@ export type Props = {
 
 const NavigationLayout: React.FC<Props> = ({ children, title, useCreate }) => {
     const [menuOpen, setMenuOpen] = useState(false);
-    const [headerActions, setActions] = userHeaderActionState();
+    const [headerActions, setActions] = useCrudActions();
     const currentPath = usePathname();
 
     return (
         <div className="relative h-full flex flex-col">
-            <nav className="h-15 bg-white flex items-center justify-start px-4 py-1 relative">
+            <nav className="h-15 bg-white flex items-center justify-start px-4 py-1 relative min-h-[60px]">
                 <button
                     data-sidebar-target="sidebar-menu"
                     data-sidebar-toggle="sidebar-menu"
@@ -105,7 +105,9 @@ const NavigationLayout: React.FC<Props> = ({ children, title, useCreate }) => {
                     },
                 ]}
             />
-            <div className="px-2 py-2 grow">{children}</div>
+            <div className="px-2 py-2 grow overflow-y-scroll no-scroll">
+                {children}
+            </div>
         </div>
     );
 };

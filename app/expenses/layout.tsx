@@ -1,5 +1,5 @@
 import NavigationLayout from "@/components/layouts/Navigation.layout";
-import { HeaderActionsState } from "@/components/state/HeaderActions.state";
+import { CrudActionsState } from "@/components/state/CrudActions.state";
 import React from "react";
 
 export type Props = {
@@ -8,11 +8,11 @@ export type Props = {
 
 const NavLayout: React.FC<Props> = ({ children }) => {
     return (
-        <HeaderActionsState>
+        <CrudActionsState>
             <NavigationLayout title="Expenses" useCreate>
                 {children}
             </NavigationLayout>
-        </HeaderActionsState>
+        </CrudActionsState>
     );
 };
 

@@ -5,7 +5,7 @@ import TextField from "@/components/forms/TextField";
 import DatePicker from "@/components/forms/DatePicker";
 import SelectField, { SelectOption } from "@/components/forms/SelectField";
 import { Funnel } from "lucide-react";
-import { userHeaderActionState } from "@/components/state/HeaderActions.state";
+import { useCrudActions } from "@/components/state/CrudActions.state";
 import InteractiveModal from "@/components/common/InteractiveModal";
 import ExpenseForm from "@/components/forms/ExpenseForm";
 import TagSelection from "@/components/forms/TagSelection";
@@ -13,7 +13,7 @@ import TagSelection from "@/components/forms/TagSelection";
 export type Props = {};
 
 const ExpensesHome: React.FC<Props> = ({}) => {
-    const [actions, setActions] = userHeaderActionState();
+    const [actions, setActions] = useCrudActions();
 
     const [filters, setFilters] = useState({
         open: false,

@@ -1,17 +1,25 @@
-export type ApiType = {
-    local: () => string;
-    external: () => string;
+export type ApiTypeGenerator = {
+    [type in ApiType]: () => string;
 };
+
+export enum ApiType {
+    LOCAL = "LOCAL",
+    EXTERNAL = "EXTERNAL",
+}
 
 export class UrlBuilder {
     private baseUrl: string;
     private path: string = "";
 
-    private apiType: ApiType = {
-        local: () => {
-            return "";
+    private apiType: ApiTypeGenerator = {
+        LOCAL: () => {
+            if (!process.env.APP_DOMAIN) {
+                throw new Error("No App domain set");
+            }
+
+            return process.env.APP_DOMAIN;
         },
-        external: () => {
+        EXTERNAL: () => {
             if (!process.env.EXPENSES_API) {
                 throw new Error("No auth API set");
             }
@@ -20,7 +28,7 @@ export class UrlBuilder {
         },
     };
 
-    constructor(type: "local" | "external" = "external") {
+    constructor(type: ApiType = ApiType.EXTERNAL) {
         const getBaseUrl = this.apiType[type];
 
         this.baseUrl = getBaseUrl();
@@ -31,8 +39,40 @@ export class UrlBuilder {
         return this;
     }
 
-    use(customPath: string) {
-        this.path = customPath;
+    /**
+     *
+     * @param customPath Must be the full path without the domain
+     * @returns
+     */
+    usePath(pathname: string) {
+        const url = new URL(pathname, this.baseUrl);
+        this.path = url.pathname;
+
+        return this;
+    }
+
+    /**
+     *
+     * @param customURL Full URL including query params
+     * @returns
+     */
+    useURL(customURL: string) {
+        const baseUrl = new URL(customURL);
+        this.path = baseUrl.pathname;
+        this.baseUrl = baseUrl.origin;
+
+        return this;
+    }
+
+    setParams(params: Record<string, string>) {
+        const url = new URL(this.path, this.baseUrl);
+
+        Object.entries(params).forEach(([name, value]) => {
+            url.searchParams.set(name, value);
+        });
+
+        this.path = url.pathname + url.search;
+
         return this;
     }
 
@@ -52,8 +92,8 @@ export class UrlBuilder {
         return this.concatenate("/expense");
     }
 
-    tags() {
-        return this.concatenate("/tag");
+    tags(tagId?: number) {
+        return this.concatenate(`/tag${tagId ? "/" + tagId : ""}`);
     }
 
     reports() {
@@ -66,10 +106,15 @@ export class UrlBuilder {
         return this;
     }
 
-    build() {
-        const path = this.path;
+    resetPath() {
         this.path = "";
+    }
 
-        return `${this.baseUrl}${path}`;
+    build() {
+        const newUrl = new URL(this.path, this.baseUrl);
+
+        this.resetPath();
+
+        return newUrl.href;
     }
 }

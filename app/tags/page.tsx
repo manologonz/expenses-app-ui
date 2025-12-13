@@ -1,51 +1,70 @@
 "use client";
 import InteractiveModal from "@/components/common/InteractiveModal";
+import { Button } from "@/components/forms/Button";
 import TagForm from "@/components/forms/TagForm";
 import TextField from "@/components/forms/TextField";
 import { useTagList } from "@/components/hooks/tags";
-import TagItem from "@/components/lists/TagItem";
+import LoadingMask from "@/components/layouts/LoadingMask";
+import TagItem from "@/components/lists/Tag/TagItem";
+import TagList from "@/components/lists/Tag/TagList";
+import { ActionStatus } from "@/utils/types";
 import React, { useState } from "react";
 
 export type Props = {};
 
 const Tags: React.FC<Props> = ({}) => {
-    const [search, setSearch] = useState("");
-    const { data, status } = useTagList();
+    const { data, status, search, hasMore, mutate, next, doSearch } =
+        useTagList();
 
     return (
         <div className="w-full h-full">
-            <div className="w-full flex items-center gap-2">
-                <TextField
-                    containerClass="grow"
-                    type="text"
-                    label="Search"
-                    name="search"
-                    value={search}
-                    onChange={(event) => {
-                        setSearch(event.target.value);
-                    }}
-                    hideLabel
-                />
-            </div>
-            <div className="w-full flex flex-col gap-3">
-                {status === "loading" && (
-                    <div className="w-full text-center p-2"> Loading... </div>
-                )}
-                {status === "success" && !!data.length ? (
-                    data.map((tagItem) => {
-                        return <TagItem key={tagItem.id} {...tagItem} />;
-                    })
-                ) : status === "success" && !data.length ? (
-                    <div className="w-full text-center p-2">No tags found</div>
-                ) : null}
-                {status === "error" && (
-                    <div className="w-full text-center p-2">
-                        Cant fetch tags
-                    </div>
-                )}
+            <div className="w-full">
+                <div className="w-full flex items-center gap-2 fixed left-0 top-[50px] bg-white p-2 ">
+                    <TextField
+                        containerClass="grow"
+                        type="text"
+                        label="Search"
+                        name="search"
+                        value={search}
+                        onChange={(event) => {
+                            doSearch(event.target.value);
+                        }}
+                        hideLabel
+                    />
+                </div>
+                <div className="w-full flex flex-col gap-3 pt-[60px] pb-3">
+                    {data.map((tagResponse) => {
+                        return tagResponse.data.map((tagItem) => {
+                            return <TagItem key={tagItem.id} {...tagItem} />;
+                        });
+                    })}
+
+                    <LoadingMask status={status} pluralModelName="tags">
+                        {hasMore && (
+                            <div className="w-full">
+                                <Button
+                                    loading={
+                                        status === ActionStatus.LOADING_MORE
+                                    }
+                                    onClick={() => {
+                                        next();
+                                    }}
+                                    variation="greenjade"
+                                    text="Load more"
+                                    full
+                                ></Button>
+                            </div>
+                        )}
+                    </LoadingMask>
+                </div>
             </div>
             <InteractiveModal modalKey="create">
-                <TagForm />
+                <TagForm
+                    closeOnSave
+                    onSave={() => {
+                        mutate();
+                    }}
+                />
             </InteractiveModal>
         </div>
     );

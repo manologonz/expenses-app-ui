@@ -8,26 +8,25 @@ import React, {
     useState,
 } from "react";
 
-export type THeaderActions = {
+export type TCrudActions = {
     create: boolean;
     tag: boolean;
+    refetch: boolean;
 };
 
 const Context = createContext<
-    [
-        data: THeaderActions,
-        setActions?: Dispatch<SetStateAction<THeaderActions>>
-    ]
->([{ create: false, tag: false }]);
+    [data: TCrudActions, setActions?: Dispatch<SetStateAction<TCrudActions>>]
+>([{ create: false, tag: false, refetch: false }]);
 
 export type Props = {
     children: React.ReactNode;
 };
 
-export const HeaderActionsState: React.FC<Props> = ({ children }) => {
-    const [theme, setActions] = useState<THeaderActions>({
+export const CrudActionsState: React.FC<Props> = ({ children }) => {
+    const [theme, setActions] = useState<TCrudActions>({
         create: false,
         tag: false,
+        refetch: false,
     });
 
     return (
@@ -37,6 +36,6 @@ export const HeaderActionsState: React.FC<Props> = ({ children }) => {
     );
 };
 
-export function userHeaderActionState() {
+export function useCrudActions() {
     return useContext(Context);
 }

@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import FieldLabel from "./FieldLabel";
 import { ColorChangeHandler } from "react-color";
 import dynamic from "next/dynamic";
+import ErrorBox from "./ErrorBox";
 
 const BlockPicker = dynamic(
     () => import("react-color").then((mod) => mod.BlockPicker),
@@ -19,6 +20,7 @@ type Props = {
     onChange: (color: string) => void;
     inputClass?: string;
     labelClass?: string;
+    errors?: string[];
 };
 
 const ColorPicker: React.FC<Props> = ({
@@ -27,9 +29,8 @@ const ColorPicker: React.FC<Props> = ({
     label,
     hideLabel,
     onChange,
-    value,
-    inputClass,
     labelClass,
+    errors,
 }) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef(null);
@@ -75,11 +76,12 @@ const ColorPicker: React.FC<Props> = ({
                     setOpen(!open);
                 }}
                 style={{
-                    background: color || "#fff",
+                    background: color || "#2b8cfb",
                 }}
                 className={`h-10 w-10 block border border-none rounded-[5px] text-[16px] cursor-pointer`}
                 ref={inputRef}
             />
+            {!!errors?.length && <ErrorBox errors={errors} />}
             <div
                 className={`absolute overflow-hidden mt-1 ${
                     !open ? "h-0 hidden" : ""
