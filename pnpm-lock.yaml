@@ -35,9 +35,6 @@ importers:
       react-dom:
         specifier: 19.1.0
         version: 19.1.0(react@19.1.0)
-      react-mobile-modals:
-        specifier: ^1.4.0
-        version: 1.4.0(react@19.1.0)
       zod:
         specifier: ^4.1.12
         version: 4.1.12
@@ -1664,12 +1661,6 @@ packages:
 
   react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
-
-  react-mobile-modals@1.4.0:
-    resolution: {integrity: sha512-ARTa+xmTF0jPbbG/dwLUSUvhh4rc3Vl/yN0Dd6+e5kgh3Su931xVO9vraaSBdDuv0U5iQpoDr/o0XwcXIl9N8A==}
-    engines: {node: '>=10'}
-    peerDependencies:
-      react: ^19.1.0
 
   react@19.1.0:
     resolution: {integrity: sha512-FS+XFBNvn3GTAWq26joslQgWNoFu08F4kl0J4CgdNKADkdSGXQyTCnKteIAJy96Br6YbpEU1LSzV5dYtjMkMDg==}
@@ -3619,10 +3610,6 @@ snapshots:
       scheduler: 0.26.0
 
   react-is@16.13.1: {}
-
-  react-mobile-modals@1.4.0(react@19.1.0):
-    dependencies:
-      react: 19.1.0
 
   react@19.1.0: {}
 
