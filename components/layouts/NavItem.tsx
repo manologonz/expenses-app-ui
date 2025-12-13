@@ -13,12 +13,12 @@ const NavItem: React.FC<Props> = ({ active, title, path, icon: Icon }) => {
     return (
         <a
             href={path}
-            className={`flex w-full py-3 px-3 uppercase gap-2 ${
+            className={`flex w-full py-3 px-3 uppercase gap-2 hover:bg-greensage text-white ${
                 active ? "bg-greensage" : "bg-transparent"
             }`}
         >
             {Icon}
-            <span className="text-white font-bold">{title}</span>
+            <span className=" font-bold">{title}</span>
         </a>
     );
 };

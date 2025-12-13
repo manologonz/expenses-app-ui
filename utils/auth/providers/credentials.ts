@@ -1,5 +1,5 @@
 import CredentialsProvider from "next-auth/providers/credentials";
-import urlBuilder from "@/utils/url-builder";
+import { UrlBuilder } from "@/utils/api/url-builder";
 import axios from "axios";
 import dayjs from "dayjs";
 
@@ -24,6 +24,7 @@ export const credentialsProviderConfig = CredentialsProvider({
 
         try {
             // Build the authentication URL using the urlBuilder
+            const urlBuilder = new UrlBuilder();
             const authUrl = urlBuilder.v1().auth().login().build();
 
             // Make API call to authenticate user
@@ -36,10 +37,6 @@ export const credentialsProviderConfig = CredentialsProvider({
 
             // If authentication is successful, return user object
             if (response.data && response.status === 200 && refreshCookie) {
-                const expirationDate = dayjs(
-                    response.data.accessTokenExpiration
-                );
-
                 const user = {
                     id: response.data.user.id as string,
                     firstName: response.data.user.firstName as string,

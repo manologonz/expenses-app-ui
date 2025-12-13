@@ -1,4 +1,5 @@
 import NavigationLayout from "@/components/layouts/Navigation.layout";
+import { CrudActionsState } from "@/components/state/CrudActions.state";
 import React from "react";
 
 export type Props = {
@@ -6,7 +7,13 @@ export type Props = {
 };
 
 const NavLayout: React.FC<Props> = ({ children }) => {
-    return <NavigationLayout title="Tags">{children}</NavigationLayout>;
+    return (
+        <CrudActionsState>
+            <NavigationLayout title="Tags" useCreate>
+                {children}
+            </NavigationLayout>
+        </CrudActionsState>
+    );
 };
 
 export default NavLayout;

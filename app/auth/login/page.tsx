@@ -4,7 +4,7 @@ import Image from "next/image";
 
 const Login: React.FC<Props> = () => {
     return (
-        <div className="flex justify-center items-start w-full h-full bg-linear-[150deg] from-greensage to-yellowbutter pt-20">
+        <div className="flex justify-center items-start w-full h-full bg-linear-[150deg] from-greensage to-yellowbutter pt-20 overflow-y-scroll">
             <div className="px-5 py-7 bg-white h-auto rounded-[10px]">
                 <div className="flex justify-center pb-5">
                     <Image

@@ -1,0 +1,40 @@
+import { isAxiosError } from "axios";
+import { ApiType, UrlBuilder } from "./url-builder";
+import { ServiceResponse } from "../types";
+
+export type VersionManger = { [version: `v${number}`]: string };
+
+export default class BaseLocalService {
+    protected baseUrl: string;
+    protected urlBuilder = new UrlBuilder(ApiType.LOCAL);
+
+    private versionManager: VersionManger = {
+        v1: this.urlBuilder.v1().build(),
+    };
+
+    constructor(version: `v${number}` = "v1") {
+        const apiBaseUrl = this.versionManager[version];
+
+        if (!apiBaseUrl) {
+            throw new Error("Invalid API version");
+        }
+
+        this.baseUrl = apiBaseUrl;
+    }
+
+    handleError<T>(error: unknown): ServiceResponse<T> {
+        if (isAxiosError(error)) {
+            return {
+                ok: false,
+                status: error.response?.status || 500,
+                error: error.response?.data?.detail,
+            };
+        }
+
+        return {
+            ok: false,
+            status: 500,
+            error: "Something when't wrong",
+        };
+    }
+}
