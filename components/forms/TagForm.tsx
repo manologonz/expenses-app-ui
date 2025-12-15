@@ -12,6 +12,7 @@ import { ApiType, UrlBuilder } from "@/utils/api/url-builder";
 type Props = {
     closeOnSave?: boolean;
     onSave?: (tag: Tag) => void;
+    tagData?: Omit<Tag, "slug, updatedAt, createdAt, children">;
 };
 
 const TagForm: React.FC<Props> = ({ closeOnSave, onSave }) => {
@@ -41,7 +42,7 @@ const TagForm: React.FC<Props> = ({ closeOnSave, onSave }) => {
             setStatus(ActionStatus.SUCCESS);
 
             if (closeOnSave) {
-                setActions({ ...actions, create: false });
+                setActions({ ...actions, modalOpen: false });
             }
 
             if (onSave) {

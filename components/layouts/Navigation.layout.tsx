@@ -26,7 +26,7 @@ const NavigationLayout: React.FC<Props> = ({ children, title, useCreate }) => {
 
     return (
         <div className="relative h-full flex flex-col">
-            <nav className="h-15 bg-white flex items-center justify-start px-4 py-1 relative min-h-[60px]">
+            <nav className="h-15 bg-white flex items-center justify-start px-4 py-1 relative min-h-15">
                 <button
                     data-sidebar-target="sidebar-menu"
                     data-sidebar-toggle="sidebar-menu"
@@ -57,7 +57,7 @@ const NavigationLayout: React.FC<Props> = ({ children, title, useCreate }) => {
                             if (setActions) {
                                 setActions({
                                     ...headerActions,
-                                    create: true,
+                                    modalOpen: true,
                                 });
                             }
                         }}

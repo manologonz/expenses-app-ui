@@ -17,8 +17,8 @@ const TagPage: React.FC<Props> = ({ params }) => {
 
     return (
         <div className="w-full h-full">
-            <div className="w-full">
-                <LoadingMask status={status}>
+            <LoadingMask status={status}>
+                <div className="w-full">
                     <div className="w-full border border-gray-100 px-3 pt-4 rounded-[10px] shadow-[0_2px_8px_0_rgba(99,99,99,0.2)] mb-6">
                         <div className="w-full flex justify-between items-center mb-5">
                             <span>Name: </span>
@@ -59,12 +59,12 @@ const TagPage: React.FC<Props> = ({ params }) => {
                             </span>
                         </div>
                     </div>
-                </LoadingMask>
-            </div>
+                </div>
 
-            <InteractiveModal modalKey="create">
-                <TagForm closeOnSave onSave={() => {}} />
-            </InteractiveModal>
+                <InteractiveModal>
+                    <TagForm closeOnSave onSave={() => {}} />
+                </InteractiveModal>
+            </LoadingMask>
         </div>
     );
 };
