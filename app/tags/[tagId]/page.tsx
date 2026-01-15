@@ -4,16 +4,24 @@ import { Button } from "@/components/forms/Button";
 import TagForm from "@/components/forms/TagForm";
 import { useTagItem } from "@/components/hooks/tags";
 import LoadingMask from "@/components/layouts/LoadingMask";
-import React, { use } from "react";
+import React, { use, useState } from "react";
 import { Plus } from "lucide-react";
+import { useCrudActions } from "@/components/state/CrudActions.state";
+import { Tag } from "@/utils/types";
 
 export type Props = {
-    params: Promise<{ tagId: number }>;
+    params: Promise<{ tagId: string }>;
 };
 
 const TagPage: React.FC<Props> = ({ params }) => {
     const { tagId } = use(params);
-    const { data, status } = useTagItem(tagId);
+    const { data, status, mutate } = useTagItem(parseInt(tagId));
+    const [actions, setActions] = useCrudActions();
+    const [subtag, setSubtag] = useState<Tag>();
+
+    if (!setActions) {
+        return;
+    }
 
     return (
         <div className="w-full h-full">
@@ -34,7 +42,12 @@ const TagPage: React.FC<Props> = ({ params }) => {
                             ></span>
                         </div>
                         <Button
-                            onClick={() => {}}
+                            onClick={() => {
+                                setActions({
+                                    ...actions,
+                                    modal: { open: true, key: "edit-tag" },
+                                });
+                            }}
                             text="Edit details"
                             variation="yellowbutter"
                             full
@@ -44,25 +57,67 @@ const TagPage: React.FC<Props> = ({ params }) => {
                         <div className="w-full mb-2">
                             <span>Subtags</span>
                         </div>
-                        <div className="w-full flex flex-wrap">
+                        <div className="w-full flex flex-wrap gap-2">
                             {!!data?.children?.length
                                 ? data.children.map((subtag, index) => {
                                       return (
-                                          <span className="px-4 py-1 bg-gray-200 rounded-[10px]">
+                                          <button
+                                              onClick={() => {
+                                                  setSubtag(subtag);
+                                                  setActions({
+                                                      ...actions,
+                                                      modal: {
+                                                          open: true,
+                                                          key: "subtag",
+                                                      },
+                                                  });
+                                              }}
+                                              key={subtag.id}
+                                              className="px-4 py-1 bg-gray-200 rounded-[10px]"
+                                          >
                                               {subtag.name}
-                                          </span>
+                                          </button>
                                       );
                                   })
                                 : null}
-                            <span className="px-4 py-1 bg-yellowbutter rounded-[10px]">
+                            <button
+                                onClick={() => {
+                                    setActions({
+                                        ...actions,
+                                        modal: { open: true, key: "subtag" },
+                                    });
+                                }}
+                                type="button"
+                                className="px-4 py-1 bg-yellowbutter rounded-[10px]"
+                            >
                                 <Plus width={16} height={16} />
-                            </span>
+                            </button>
                         </div>
                     </div>
                 </div>
 
-                <InteractiveModal>
-                    <TagForm closeOnSave onSave={() => {}} />
+                <InteractiveModal modalKey="subtag">
+                    <TagForm
+                        parentId={parseInt(tagId)}
+                        tagData={subtag}
+                        title="Subtag"
+                        closeOnSave
+                        onSave={() => {
+                            mutate();
+                        }}
+                        isSubtag
+                    />
+                </InteractiveModal>
+
+                <InteractiveModal modalKey="edit-tag">
+                    <TagForm
+                        tagData={data}
+                        title="Edit tag"
+                        closeOnSave
+                        onSave={() => {
+                            mutate();
+                        }}
+                    />
                 </InteractiveModal>
             </LoadingMask>
         </div>

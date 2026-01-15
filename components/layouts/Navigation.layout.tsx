@@ -21,7 +21,7 @@ export type Props = {
 
 const NavigationLayout: React.FC<Props> = ({ children, title, useCreate }) => {
     const [menuOpen, setMenuOpen] = useState(false);
-    const [headerActions, setActions] = useCrudActions();
+    const [actions, setActions] = useCrudActions();
     const currentPath = usePathname();
 
     return (
@@ -56,8 +56,11 @@ const NavigationLayout: React.FC<Props> = ({ children, title, useCreate }) => {
                         onClick={() => {
                             if (setActions) {
                                 setActions({
-                                    ...headerActions,
-                                    modalOpen: true,
+                                    ...actions,
+                                    modal: {
+                                        open: true,
+                                        key: "entity-create",
+                                    },
                                 });
                             }
                         }}

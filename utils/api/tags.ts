@@ -1,7 +1,13 @@
 import axios from "axios";
 import BaseLocalService from "./base";
 import { ApiType, UrlBuilder } from "./url-builder";
-import { ServiceResponse, Tag, TagData, TagListResponse } from "../types";
+import {
+    ServiceResponse,
+    SubtagData,
+    Tag,
+    TagData,
+    TagListResponse,
+} from "../types";
 
 export default class TagLocalService extends BaseLocalService {
     constructor(version?: `v${number}`) {
@@ -50,11 +56,27 @@ export default class TagLocalService extends BaseLocalService {
         return requestUrl;
     }
 
-    async createTag(data: TagData) {
+    async createTag(data: TagData): Promise<ServiceResponse<Tag>> {
         try {
             const response = await axios.post(this.baseUrl, data);
             return {
                 ok: true,
+                status: response.status,
+                data: response.data,
+            };
+        } catch (error) {
+            return this.handleError<Tag>(error);
+        }
+    }
+
+    async updateTag(id: number, data: TagData) {
+        try {
+            let requestUrl = this.urlBuilder.v1().tags(id).build();
+            const response = await axios.put(requestUrl, data);
+
+            return {
+                ok: true,
+                status: response.status,
                 data: response.data,
             };
         } catch (error) {

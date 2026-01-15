@@ -7,9 +7,10 @@ import { AnimatePresence, motion } from "motion/react";
 
 type Props = {
     children: React.ReactNode;
+    modalKey: string;
 };
 
-const InteractiveModal: React.FC<Props> = ({ children }) => {
+const InteractiveModal: React.FC<Props> = ({ children, modalKey }) => {
     const [actions, setActions] = useCrudActions();
 
     if (!setActions) {
@@ -22,11 +23,12 @@ const InteractiveModal: React.FC<Props> = ({ children }) => {
         return () => {
             document.body.style.overflow = "";
         };
-    }, [actions.modalOpen]);
+    }, [actions?.modal?.open]);
 
     return (
         <AnimatePresence>
-            {!!actions.modalOpen && ( // Validate for animation
+            {!!actions?.modal?.open && actions.modal.key === modalKey && (
+                // Validate for animation
                 <motion.div className="h-screen w-full absolute left-0 bottom-0 bg-transparent flex items-end transition-all">
                     <motion.div
                         initial={{ y: "100%" }}
@@ -46,7 +48,10 @@ const InteractiveModal: React.FC<Props> = ({ children }) => {
                                 onClick={() => {
                                     setActions({
                                         ...actions,
-                                        modalOpen: false,
+                                        modal: {
+                                            open: false,
+                                            key: modalKey,
+                                        },
                                     });
                                 }}
                             >

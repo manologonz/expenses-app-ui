@@ -9,12 +9,15 @@ import React, {
 } from "react";
 
 export type TCrudActions = {
-    modalOpen: boolean;
+    modal: {
+        open: boolean;
+        key: string;
+    };
 };
 
 const Context = createContext<
     [data: TCrudActions, setActions?: Dispatch<SetStateAction<TCrudActions>>]
->([{ modalOpen: false }]);
+>([{ modal: { open: false, key: "" } }]);
 
 export type Props = {
     children: React.ReactNode;
@@ -22,7 +25,7 @@ export type Props = {
 
 export const CrudActionsState: React.FC<Props> = ({ children }) => {
     const [theme, setActions] = useState<TCrudActions>({
-        modalOpen: false,
+        modal: { open: false, key: "" },
     });
 
     return (
