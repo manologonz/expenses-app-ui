@@ -82,7 +82,7 @@ const TagForm: React.FC<Props> = ({
             if (closeOnSave) {
                 setActions({
                     ...actions,
-                    modal: { open: true, key: "entity-create" },
+                    modal: { open: true, key: "edit-tag" },
                 });
             }
 
@@ -98,7 +98,7 @@ const TagForm: React.FC<Props> = ({
         e.preventDefault();
 
         const validationSchema = object(
-            getTagValidationObject({ subtag: true })
+            getTagValidationObject({ subtag: true }),
         );
 
         const validationResult = validationSchema.safeParse(tag);
@@ -119,8 +119,6 @@ const TagForm: React.FC<Props> = ({
 
         saveData(tag);
     };
-
-    console.log(tag);
 
     return (
         <div className="w-full h-full flex flex-col">

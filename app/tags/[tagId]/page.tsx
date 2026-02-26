@@ -1,4 +1,5 @@
 "use client";
+import { redirect } from "next/navigation";
 import InteractiveModal from "@/components/common/InteractiveModal";
 import { Button } from "@/components/forms/Button";
 import TagForm from "@/components/forms/TagForm";
@@ -15,13 +16,23 @@ export type Props = {
 
 const TagPage: React.FC<Props> = ({ params }) => {
     const { tagId } = use(params);
-    const { data, status, mutate } = useTagItem(parseInt(tagId));
+    const { data, status, mutate, deleteTag } = useTagItem(parseInt(tagId));
+    const [deleteLoading, setDeleteLoading] = useState(false);
     const [actions, setActions] = useCrudActions();
     const [subtag, setSubtag] = useState<Tag>();
 
     if (!setActions) {
         return;
     }
+
+    const handleDelete = async () => {
+        setDeleteLoading(true);
+        const response = await deleteTag();
+        setDeleteLoading(false);
+        if (response.ok) {
+            redirect("/tags");
+        }
+    };
 
     return (
         <div className="w-full h-full">
@@ -93,6 +104,15 @@ const TagPage: React.FC<Props> = ({ params }) => {
                                 <Plus width={16} height={16} />
                             </button>
                         </div>
+                    </div>
+                    <div className="w-full flex justify-center mt-5 ">
+                        <Button
+                            full
+                            loading={deleteLoading}
+                            onClick={handleDelete}
+                            text="Delete"
+                            variation="danger"
+                        />
                     </div>
                 </div>
 

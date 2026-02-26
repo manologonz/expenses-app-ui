@@ -6,7 +6,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
     req: NextRequest,
-    data: { params: Promise<{ tagId?: string }> }
+    data: { params: Promise<{ tagId?: string }> },
 ) {
     const session = await getToken({ req });
 
@@ -15,7 +15,7 @@ export async function GET(
     if (!session) {
         return NextResponse.json(
             { detail: "Not authenticated" },
-            { status: 403 }
+            { status: 403 },
         );
     }
 
@@ -48,14 +48,14 @@ export async function GET(
                         error.response?.data?.detail ||
                         error.response?.status?.toString(),
                 },
-                { status: error.response?.status || 400 }
+                { status: error.response?.status || 400 },
             );
         } else {
             return NextResponse.json(
                 {
                     detail: "Error while fetching tag.",
                 },
-                { status: 400 }
+                { status: 400 },
             );
         }
     }
@@ -63,7 +63,7 @@ export async function GET(
 
 export async function PUT(
     req: NextRequest,
-    data: { params: Promise<{ tagId?: string }> }
+    data: { params: Promise<{ tagId?: string }> },
 ) {
     const session = await getToken({ req });
 
@@ -74,7 +74,7 @@ export async function PUT(
     if (!session) {
         return NextResponse.json(
             { detail: "Not authenticated" },
-            { status: 403 }
+            { status: 403 },
         );
     }
 
@@ -118,14 +118,70 @@ export async function PUT(
                         error.response?.data?.detail ||
                         error.response?.status?.toString(),
                 },
-                { status: error.response?.status || 400 }
+                { status: error.response?.status || 400 },
             );
         } else {
             return NextResponse.json(
                 {
                     detail: "Error while fetching tag.",
                 },
-                { status: 400 }
+                { status: 400 },
+            );
+        }
+    }
+}
+
+export async function DELETE(
+    req: NextRequest,
+    data: { params: Promise<{ tagId?: string }> },
+) {
+    const session = await getToken({ req });
+
+    const { tagId: _tagId } = await data.params;
+
+    if (!session) {
+        return NextResponse.json(
+            { detail: "Not authenticated" },
+            { status: 403 },
+        );
+    }
+
+    if (!_tagId) {
+        return NextResponse.json({ detail: "Tag not found" }, { status: 403 });
+    }
+
+    const tagId = parseInt(_tagId);
+
+    if (isNaN(tagId)) {
+        return NextResponse.json({ detail: "Tag not found" }, { status: 403 });
+    }
+
+    const urlBuilder = new UrlBuilder();
+
+    try {
+        const url = urlBuilder.v1().tags(tagId).build();
+        const respose = await axios.delete(url, {
+            headers: { Authorization: `Bearer ${session.accessToken}` },
+        });
+
+        return NextResponse.json(respose.data.data);
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            return NextResponse.json(
+                {
+                    message: "Tag couldn't be deleted",
+                    detail:
+                        error.response?.data?.detail ||
+                        error.response?.status?.toString(),
+                },
+                { status: error.response?.status || 400 },
+            );
+        } else {
+            return NextResponse.json(
+                {
+                    detail: "Error while deleting tag.",
+                },
+                { status: 400 },
             );
         }
     }
