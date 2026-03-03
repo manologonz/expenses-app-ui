@@ -1,12 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import TagLocalService from "@/utils/api/tags";
 import {
     TagListResponse,
     Tag,
     ActionStatus,
-    ServiceResponse,
+    TagListOptions,
 } from "@/utils/types";
 import useSWRInfinite from "swr/infinite";
 import { ApiType, UrlBuilder } from "@/utils/api/url-builder";
@@ -19,7 +19,7 @@ export type Props = {
     data: TagListResponse[];
 };
 
-export function useTagList() {
+export function useTagList(options?: TagListOptions) {
     const [sort, setSort] = useState("");
     const [search, setSearch] = useState("");
     const pageLimit = "25";
@@ -44,6 +44,10 @@ export function useTagList() {
             params.sort = sort;
         }
 
+        if (options?.depth) {
+            params.depth = options.depth;
+        }
+
         params.page = (pageIndex + 1).toString();
 
         if (search) {
@@ -57,7 +61,7 @@ export function useTagList() {
         useSWRInfinite(
             getKey, // SWR key
             fetcher, // fetcher receives the key
-            { parallel: true } // options
+            { parallel: true }, // options
         );
 
     const isLoadingMore =
@@ -69,10 +73,10 @@ export function useTagList() {
     const status = error
         ? ActionStatus.ERROR
         : isLoading
-        ? ActionStatus.LOADING
-        : isLoadingMore
-        ? ActionStatus.LOADING_MORE
-        : ActionStatus.SUCCESS;
+          ? ActionStatus.LOADING
+          : isLoadingMore
+            ? ActionStatus.LOADING_MORE
+            : ActionStatus.SUCCESS;
 
     return {
         data: data ?? [],
@@ -88,8 +92,30 @@ export function useTagList() {
 }
 
 export function useTagItem(tagId: number) {
+    const [deleteLoading, setDeleteLoading] = useState(false);
     const tagService = new TagLocalService();
-    const fetcher = () => {};
+    const fetcher = async (): Promise<Tag> => {
+        const response = await tagService.getTag(tagId);
+        return response.data;
+    };
 
-    const { data, isLoading } = useSWR("tag-item", fetcher);
+    const deleteTag = async () => {
+        return tagService.deleteTag(tagId);
+    };
+
+    const { data, isLoading, mutate, error } = useSWR("tag-item", fetcher);
+
+    const status = error
+        ? ActionStatus.ERROR
+        : isLoading
+          ? ActionStatus.LOADING
+          : ActionStatus.SUCCESS;
+
+    return {
+        deleteLoading,
+        deleteTag,
+        data,
+        status,
+        mutate,
+    };
 }

@@ -21,12 +21,12 @@ export type Props = {
 
 const NavigationLayout: React.FC<Props> = ({ children, title, useCreate }) => {
     const [menuOpen, setMenuOpen] = useState(false);
-    const [headerActions, setActions] = useCrudActions();
+    const [actions, setActions] = useCrudActions();
     const currentPath = usePathname();
 
     return (
         <div className="relative h-full flex flex-col">
-            <nav className="h-15 bg-white flex items-center justify-start px-4 py-1 relative min-h-[60px]">
+            <nav className="h-15 bg-white flex items-center justify-start px-4 py-1 relative min-h-15">
                 <button
                     data-sidebar-target="sidebar-menu"
                     data-sidebar-toggle="sidebar-menu"
@@ -56,8 +56,11 @@ const NavigationLayout: React.FC<Props> = ({ children, title, useCreate }) => {
                         onClick={() => {
                             if (setActions) {
                                 setActions({
-                                    ...headerActions,
-                                    create: true,
+                                    ...actions,
+                                    modal: {
+                                        open: true,
+                                        key: "entity-create",
+                                    },
                                 });
                             }
                         }}

@@ -1,28 +1,65 @@
 import React, { useState } from "react";
 import TextField from "./TextField";
 import ColorPicker from "./ColorPicker";
-import { InputButton } from "./Button";
-import { z } from "zod";
-import { ActionStatus, Tag, TagData, TagErrors } from "@/utils/types";
+import { Button, InputButton } from "./Button";
+import { object, treeifyError } from "zod";
+import {
+    ActionStatus,
+    ServiceResponse,
+    Tag,
+    TagData,
+    TagErrors,
+} from "@/utils/types";
 import { useCrudActions } from "../state/CrudActions.state";
 import TagLocalService from "@/utils/api/tags";
-import { mutate } from "swr";
-import { ApiType, UrlBuilder } from "@/utils/api/url-builder";
+import { getTagValidationObject } from "@/utils/tags";
 
 type Props = {
     closeOnSave?: boolean;
-    onSave?: (tag: Tag) => void;
+    onSave?: (tag?: Tag) => void;
+    onDelete?: (tag?: Tag) => void;
+    tagData?: Omit<Tag, "slug, updatedAt, createdAt, children">;
+    title?: string;
+    parentId?: number;
+    isSubtag?: boolean;
+    modalId?: string;
+    withDelete?: boolean;
 };
 
-const TagForm: React.FC<Props> = ({ closeOnSave, onSave }) => {
+const TagForm: React.FC<Props> = ({
+    title,
+    closeOnSave,
+    tagData,
+    parentId,
+    isSubtag,
+    modalId,
+    withDelete,
+    onSave,
+    onDelete,
+}) => {
     const tagService = new TagLocalService();
     const [actions, setActions] = useCrudActions();
+    const isEdit = !!tagData?.id;
 
     if (!setActions) {
         return;
     }
 
-    const [tag, setTag] = useState<TagData>({ name: "", color: "#2b8cfb" });
+    let initialTag: TagData = { name: "", parent: parentId };
+
+    if (!isSubtag) {
+        initialTag.color = "#2b8cfb";
+    }
+
+    if (tagData) {
+        initialTag = {
+            id: tagData.id,
+            name: tagData.name,
+            color: tagData.color,
+        };
+    }
+
+    const [tag, setTag] = useState<TagData>(initialTag);
 
     const [errors, setErrors] = useState<TagErrors>({
         parent: [],
@@ -32,16 +69,27 @@ const TagForm: React.FC<Props> = ({ closeOnSave, onSave }) => {
 
     const [status, setStatus] = useState<ActionStatus>(ActionStatus.NONE);
 
-    const createTag = async (tagData: TagData) => {
+    const saveData = async (tagData: TagData) => {
         setStatus(ActionStatus.LOADING);
-        const response = await tagService.createTag(tagData);
-        if (!response.ok) {
+
+        let response: ServiceResponse<Tag>;
+
+        if (isEdit && tagData.id) {
+            response = await tagService.updateTag(tagData.id, tagData);
+        } else {
+            response = await tagService.createTag(tagData);
+        }
+
+        if (!response?.ok) {
             setStatus(ActionStatus.ERROR);
         } else {
             setStatus(ActionStatus.SUCCESS);
 
             if (closeOnSave) {
-                setActions({ ...actions, create: false });
+                setActions({
+                    ...actions,
+                    modal: { open: false, key: modalId || "edit-tag" },
+                });
             }
 
             if (onSave) {
@@ -52,23 +100,46 @@ const TagForm: React.FC<Props> = ({ closeOnSave, onSave }) => {
         return response.data;
     };
 
+    const handleDelete = async () => {
+        setStatus(ActionStatus.LOADING);
+
+        let response = null;
+
+        if (!!tagData) {
+            response = await tagService.deleteTag(tagData.id);
+        }
+
+        if (!response?.ok) {
+            setStatus(ActionStatus.ERROR);
+        } else {
+            setStatus(ActionStatus.SUCCESS);
+
+            if (closeOnSave) {
+                setActions({
+                    ...actions,
+                    modal: { open: false, key: modalId || "edit-tag" },
+                });
+            }
+
+            if (onDelete) {
+                onDelete(response.data);
+            }
+        }
+
+        return response?.data;
+    };
+
     const handleSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
         e.preventDefault();
 
-        const validationSchema = z.object({
-            parent: z.int().optional(),
-            name: z.string().min(1, {
-                message: "This field is required.",
-            }),
-            color: z.string().regex(/^#[0-9a-fA-F]{6}$/, {
-                message: "Invalid Hex color format.",
-            }),
-        });
+        const validationSchema = object(
+            getTagValidationObject({ subtag: true }),
+        );
 
         const validationResult = validationSchema.safeParse(tag);
 
         if (!validationResult.success) {
-            const errorsTree = z.treeifyError(validationResult.error);
+            const errorsTree = treeifyError(validationResult.error);
             const colorErrors = errorsTree.properties?.color;
             const nameErrors = errorsTree.properties?.name;
 
@@ -81,13 +152,15 @@ const TagForm: React.FC<Props> = ({ closeOnSave, onSave }) => {
             return;
         }
 
-        createTag(tag);
+        saveData(tag);
     };
 
     return (
         <div className="w-full h-full flex flex-col">
             <div className="border-b border-white pb-2 mb-5">
-                <h2 className="text-white uppercase font-bold">New tag</h2>
+                <h2 className="text-white uppercase font-bold">
+                    {title || "New tag"}
+                </h2>
             </div>
             <form
                 className="flex flex-col justify-between grow"
@@ -107,17 +180,31 @@ const TagForm: React.FC<Props> = ({ closeOnSave, onSave }) => {
                         }}
                         hideLabel
                     />
-                    <ColorPicker
-                        onChange={(color) => {
-                            setTag({ ...tag, color });
-                        }}
-                        name="color"
-                        label="Color"
-                        hideLabel
-                        value={tag.color}
-                    />
+                    {!isSubtag && (
+                        <ColorPicker
+                            onChange={(color) => {
+                                setTag({ ...tag, color });
+                            }}
+                            name="color"
+                            label="Color"
+                            hideLabel
+                            value={tag.color || "#FFF"}
+                        />
+                    )}
                 </div>
-                <div className="mt-10">
+                {!!withDelete && !!tagData?.id && (
+                    <div className="mt-10">
+                        <Button
+                            onClick={handleDelete}
+                            className="w-full"
+                            variation="danger"
+                            text="Delete"
+                            loading={status === ActionStatus.LOADING}
+                        />
+                    </div>
+                )}
+
+                <div className="mt-0">
                     <InputButton
                         className="w-full"
                         variation="greenjade"

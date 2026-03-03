@@ -9,7 +9,7 @@ export async function POST(req: NextRequest) {
     if (!session) {
         return NextResponse.json(
             { detail: "Not authenticated" },
-            { status: 403 }
+            { status: 403 },
         );
     }
 
@@ -26,6 +26,7 @@ export async function POST(req: NextRequest) {
 
         return NextResponse.json(response.data, { status: 201 });
     } catch (error) {
+        console.log("Error", error);
         if (axios.isAxiosError(error)) {
             return NextResponse.json(
                 {
@@ -34,7 +35,7 @@ export async function POST(req: NextRequest) {
                         error.response?.data?.detail ||
                         error.response?.status?.toString(),
                 },
-                { status: error.response?.status }
+                { status: error.response?.status },
             );
         } else {
             return NextResponse.json({ detail: "Can't create tag, API Code:" });
@@ -53,6 +54,7 @@ export async function GET(req: NextRequest) {
     const limit = searchParams.get("limit");
     const page = searchParams.get("page");
     const search = searchParams.get("search");
+    const depth = searchParams.get("depth");
 
     if (sort) {
         params.sort = sort;
@@ -70,10 +72,14 @@ export async function GET(req: NextRequest) {
         params.search = search;
     }
 
+    if (depth) {
+        params.depth = depth;
+    }
+
     if (!session) {
         return NextResponse.json(
             { detail: "Not authenticated" },
-            { status: 403 }
+            { status: 403 },
         );
     }
 

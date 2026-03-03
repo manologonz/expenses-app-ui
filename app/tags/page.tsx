@@ -19,7 +19,7 @@ const Tags: React.FC<Props> = ({}) => {
     return (
         <div className="w-full h-full">
             <div className="w-full">
-                <div className="w-full flex items-center gap-2 fixed left-0 top-[50px] bg-white p-2 ">
+                <div className="w-full flex items-center gap-2 fixed left-0 top-12.5 bg-white p-2 ">
                     <TextField
                         containerClass="grow"
                         type="text"
@@ -32,7 +32,7 @@ const Tags: React.FC<Props> = ({}) => {
                         hideLabel
                     />
                 </div>
-                <div className="w-full flex flex-col gap-3 pt-[60px] pb-3">
+                <div className="w-full flex flex-col gap-3 pt-15 pb-3">
                     {data.map((tagResponse) => {
                         return tagResponse.data.map((tagItem) => {
                             return <TagItem key={tagItem.id} {...tagItem} />;
@@ -58,7 +58,7 @@ const Tags: React.FC<Props> = ({}) => {
                     </LoadingMask>
                 </div>
             </div>
-            <InteractiveModal modalKey="create">
+            <InteractiveModal modalKey="entity-create">
                 <TagForm
                     closeOnSave
                     onSave={() => {

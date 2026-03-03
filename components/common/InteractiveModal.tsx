@@ -7,7 +7,7 @@ import { AnimatePresence, motion } from "motion/react";
 
 type Props = {
     children: React.ReactNode;
-    modalKey: "create" | "tag";
+    modalKey: string;
 };
 
 const InteractiveModal: React.FC<Props> = ({ children, modalKey }) => {
@@ -23,11 +23,12 @@ const InteractiveModal: React.FC<Props> = ({ children, modalKey }) => {
         return () => {
             document.body.style.overflow = "";
         };
-    }, [actions[modalKey]]);
+    }, [actions?.modal?.open]);
 
     return (
         <AnimatePresence>
-            {!!actions[modalKey] && (
+            {!!actions?.modal?.open && actions.modal.key === modalKey && (
+                // Validate for animation
                 <motion.div className="h-screen w-full absolute left-0 bottom-0 bg-transparent flex items-end transition-all">
                     <motion.div
                         initial={{ y: "100%" }}
@@ -40,14 +41,17 @@ const InteractiveModal: React.FC<Props> = ({ children, modalKey }) => {
                         }}
                         className="block relative bottom-0 left-0 h-[90vh] w-full bg-greensage rounded-t-[30px] overflow-y-scroll no-scroll shadow-[rgba(50,50,93,0.25)_0px_6px_12px_-2px,rgba(0,0,0,0.3)_0px_3px_7px_-3px]"
                     >
-                        <div className="absolute top-2 right-3 h-[30px] w-[30px]">
+                        <div className="absolute top-2 right-3 h-7.5 w-7.5">
                             <button
                                 type="button"
                                 className="cursor-pointer"
                                 onClick={() => {
                                     setActions({
                                         ...actions,
-                                        [modalKey]: false,
+                                        modal: {
+                                            open: false,
+                                            key: modalKey,
+                                        },
                                     });
                                 }}
                             >

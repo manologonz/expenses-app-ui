@@ -3,7 +3,12 @@ import LoadSpinner from "../common/LoadSpinner";
 
 export type InputButtonProps = {
     id?: string;
-    variation: "redbrick" | "orangetangerine" | "greenjade" | "yellowbutter";
+    variation:
+        | "redbrick"
+        | "orangetangerine"
+        | "greenjade"
+        | "yellowbutter"
+        | "danger";
     text: string;
     full?: boolean;
     loading?: boolean;
@@ -19,6 +24,7 @@ const btnGreenjade =
     "bg-greenjade text-white hover:text-greenjade border border-greenjade";
 const btnYellowButter =
     "bg-yellowbutter hover:text-yellowbutter border border-yellowbutter";
+const btnDanger = "bg-danger text-white hover:text-danger border border-danger";
 
 const InputButton: React.FC<InputButtonProps> = ({
     id,
@@ -43,6 +49,9 @@ const InputButton: React.FC<InputButtonProps> = ({
         case "yellowbutter":
             buttonStyle = btnYellowButter;
             break;
+        case "danger":
+            buttonStyle = btnDanger;
+            break;
         default:
             buttonStyle = btnGreenjade;
     }
@@ -65,7 +74,12 @@ const InputButton: React.FC<InputButtonProps> = ({
 
 export type ButtonProps = {
     id?: string;
-    variation: "redbrick" | "orangetangerine" | "greenjade" | "yellowbutter";
+    variation:
+        | "redbrick"
+        | "orangetangerine"
+        | "greenjade"
+        | "yellowbutter"
+        | "danger";
     text: string;
     full?: boolean;
     loading?: boolean;
@@ -96,6 +110,9 @@ const Button: React.FC<ButtonProps> = ({
             break;
         case "yellowbutter":
             buttonStyle = btnYellowButter;
+            break;
+        case "danger":
+            buttonStyle = btnDanger;
             break;
         default:
             buttonStyle = btnGreenjade;
