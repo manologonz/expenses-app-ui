@@ -1,8 +1,12 @@
 export type Expense = {
     id: number;
-    amount: number;
     description: string;
-    tags: number[];
+    amount: number;
+    date: string;
+    createdAt: string;
+    updatedAt: string;
+    userId: number;
+    reportId: number | null;
 };
 
 export interface Tag {
