@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@types/react-color": "^3.0.13",
-    "axios": "^1.12.2",
+    "axios": "^1.13.2",
     "dayjs": "^1.11.19",
     "lucide-react": "^0.552.0",
     "motion": "^12.23.26",
