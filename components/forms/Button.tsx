@@ -3,7 +3,12 @@ import LoadSpinner from "../common/LoadSpinner";
 
 export type InputButtonProps = {
     id?: string;
-    variation: "redbrick" | "orangetangerine" | "greenjade" | "yellowbutter";
+    variation:
+        | "redbrick"
+        | "orangetangerine"
+        | "greenjade"
+        | "yellowbutter"
+        | "danger";
     text: string;
     full?: boolean;
     loading?: boolean;
@@ -43,6 +48,9 @@ const InputButton: React.FC<InputButtonProps> = ({
             break;
         case "yellowbutter":
             buttonStyle = btnYellowButter;
+            break;
+        case "danger":
+            buttonStyle = btnDanger;
             break;
         default:
             buttonStyle = btnGreenjade;

@@ -104,11 +104,11 @@ export async function PUT(
 
     try {
         const url = urlBuilder.v1().tags(tagId).build();
-        const respose = await axios.put(url, tagData, {
+        const response = await axios.put(url, tagData, {
             headers: { Authorization: `Bearer ${session.accessToken}` },
         });
 
-        return NextResponse.json(respose.data.data);
+        return NextResponse.json(response.data.data);
     } catch (error) {
         if (axios.isAxiosError(error)) {
             return NextResponse.json(

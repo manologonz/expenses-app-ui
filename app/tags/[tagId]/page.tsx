@@ -118,10 +118,15 @@ const TagPage: React.FC<Props> = ({ params }) => {
 
                 <InteractiveModal modalKey="subtag">
                     <TagForm
+                        modalId="subtag"
                         parentId={parseInt(tagId)}
                         tagData={subtag}
                         title="Subtag"
                         closeOnSave
+                        withDelete
+                        onDelete={() => {
+                            mutate();
+                        }}
                         onSave={() => {
                             mutate();
                         }}

@@ -2,7 +2,12 @@
 
 import { useState } from "react";
 import TagLocalService from "@/utils/api/tags";
-import { TagListResponse, Tag, ActionStatus } from "@/utils/types";
+import {
+    TagListResponse,
+    Tag,
+    ActionStatus,
+    TagListOptions,
+} from "@/utils/types";
 import useSWRInfinite from "swr/infinite";
 import { ApiType, UrlBuilder } from "@/utils/api/url-builder";
 import axios from "axios";
@@ -14,7 +19,7 @@ export type Props = {
     data: TagListResponse[];
 };
 
-export function useTagList() {
+export function useTagList(options?: TagListOptions) {
     const [sort, setSort] = useState("");
     const [search, setSearch] = useState("");
     const pageLimit = "25";
@@ -37,6 +42,10 @@ export function useTagList() {
 
         if (sort) {
             params.sort = sort;
+        }
+
+        if (options?.depth) {
+            params.depth = options.depth;
         }
 
         params.page = (pageIndex + 1).toString();

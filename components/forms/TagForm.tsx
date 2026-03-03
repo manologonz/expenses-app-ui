@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import TextField from "./TextField";
 import ColorPicker from "./ColorPicker";
-import { InputButton } from "./Button";
+import { Button, InputButton } from "./Button";
 import { object, treeifyError } from "zod";
 import {
     ActionStatus,
@@ -17,10 +17,13 @@ import { getTagValidationObject } from "@/utils/tags";
 type Props = {
     closeOnSave?: boolean;
     onSave?: (tag?: Tag) => void;
+    onDelete?: (tag?: Tag) => void;
     tagData?: Omit<Tag, "slug, updatedAt, createdAt, children">;
     title?: string;
     parentId?: number;
     isSubtag?: boolean;
+    modalId?: string;
+    withDelete?: boolean;
 };
 
 const TagForm: React.FC<Props> = ({
@@ -29,7 +32,10 @@ const TagForm: React.FC<Props> = ({
     tagData,
     parentId,
     isSubtag,
+    modalId,
+    withDelete,
     onSave,
+    onDelete,
 }) => {
     const tagService = new TagLocalService();
     const [actions, setActions] = useCrudActions();
@@ -82,7 +88,7 @@ const TagForm: React.FC<Props> = ({
             if (closeOnSave) {
                 setActions({
                     ...actions,
-                    modal: { open: true, key: "edit-tag" },
+                    modal: { open: false, key: modalId || "edit-tag" },
                 });
             }
 
@@ -92,6 +98,35 @@ const TagForm: React.FC<Props> = ({
         }
 
         return response.data;
+    };
+
+    const handleDelete = async () => {
+        setStatus(ActionStatus.LOADING);
+
+        let response = null;
+
+        if (!!tagData) {
+            response = await tagService.deleteTag(tagData.id);
+        }
+
+        if (!response?.ok) {
+            setStatus(ActionStatus.ERROR);
+        } else {
+            setStatus(ActionStatus.SUCCESS);
+
+            if (closeOnSave) {
+                setActions({
+                    ...actions,
+                    modal: { open: false, key: modalId || "edit-tag" },
+                });
+            }
+
+            if (onDelete) {
+                onDelete(response.data);
+            }
+        }
+
+        return response?.data;
     };
 
     const handleSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
@@ -157,7 +192,19 @@ const TagForm: React.FC<Props> = ({
                         />
                     )}
                 </div>
-                <div className="mt-10">
+                {!!withDelete && !!tagData?.id && (
+                    <div className="mt-10">
+                        <Button
+                            onClick={handleDelete}
+                            className="w-full"
+                            variation="danger"
+                            text="Delete"
+                            loading={status === ActionStatus.LOADING}
+                        />
+                    </div>
+                )}
+
+                <div className="mt-0">
                     <InputButton
                         className="w-full"
                         variation="greenjade"

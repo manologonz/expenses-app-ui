@@ -61,3 +61,7 @@ export enum ActionStatus {
     ERROR = "ERROR",
     REFETCH = "REFETCH",
 }
+
+export type TagListOptions = {
+    depth?: "all";
+};
