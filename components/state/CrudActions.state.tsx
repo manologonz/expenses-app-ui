@@ -9,14 +9,15 @@ import React, {
 } from "react";
 
 export type TCrudActions = {
-    create: boolean;
-    tag: boolean;
-    refetch: boolean;
+    modal: {
+        open: boolean;
+        key: string;
+    };
 };
 
 const Context = createContext<
     [data: TCrudActions, setActions?: Dispatch<SetStateAction<TCrudActions>>]
->([{ create: false, tag: false, refetch: false }]);
+>([{ modal: { open: false, key: "" } }]);
 
 export type Props = {
     children: React.ReactNode;
@@ -24,9 +25,7 @@ export type Props = {
 
 export const CrudActionsState: React.FC<Props> = ({ children }) => {
     const [theme, setActions] = useState<TCrudActions>({
-        create: false,
-        tag: false,
-        refetch: false,
+        modal: { open: false, key: "" },
     });
 
     return (

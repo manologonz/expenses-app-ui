@@ -6,19 +6,27 @@ export type Expense = {
 };
 
 export interface Tag {
-    id: string;
+    id: number;
     name: string;
-    color: string;
+    color?: string;
     slug: string;
-    parentId: number;
+    parentId?: number;
     userId: number;
     updatedAt: string;
     createdAt: string;
+    children: Tag[];
 }
 
 export type TagData = {
+    id?: number;
     name: string;
-    color: string;
+    color?: string;
+    parent?: number;
+};
+
+export type SubtagData = {
+    id?: number;
+    name: string;
     parentId?: number;
 };
 
@@ -53,3 +61,7 @@ export enum ActionStatus {
     ERROR = "ERROR",
     REFETCH = "REFETCH",
 }
+
+export type TagListOptions = {
+    depth?: "all";
+};
