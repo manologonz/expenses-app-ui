@@ -28,6 +28,13 @@ export type TagData = {
     parent?: number;
 };
 
+export type ExpenseData = {
+    id?: number;
+    amount: number;
+    description: string;
+    tags: Tag[];
+};
+
 export type SubtagData = {
     id?: number;
     name: string;
@@ -55,6 +62,12 @@ export type TagErrors = {
     parent: string[];
     name: string[];
     color: string[];
+};
+
+export type ExpenseErrors = {
+    amount: string[];
+    description: string[];
+    tags: string[];
 };
 
 export enum ActionStatus {

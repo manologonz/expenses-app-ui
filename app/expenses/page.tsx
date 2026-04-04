@@ -115,7 +115,7 @@ const ExpensesHome: React.FC<Props> = ({}) => {
                     />
                 </div>
             </div>
-            <InteractiveModal modalKey="create">
+            <InteractiveModal modalKey="entity-create">
                 <ExpenseForm />
             </InteractiveModal>
             <InteractiveModal modalKey="tag">
