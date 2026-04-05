@@ -116,14 +116,7 @@ const ExpensesHome: React.FC<Props> = ({}) => {
                 </div>
             </div>
             <InteractiveModal modalKey="entity-create">
-                <ExpenseForm />
-            </InteractiveModal>
-            <InteractiveModal modalKey="tag">
-                <TagSelection
-                    onTagSelction={(tags) => {
-                        console.log(tags);
-                    }}
-                />
+                <ExpenseForm modalId="entity-create" />
             </InteractiveModal>
         </div>
     );

@@ -55,12 +55,11 @@ const NavigationLayout: React.FC<Props> = ({ children, title, useCreate }) => {
                         className="mr-5 absolute right-0 cursor-pointer"
                         onClick={() => {
                             if (setActions) {
+                                const tmpModals = { ...actions.modals };
+                                tmpModals["entity-create"] = true;
                                 setActions({
                                     ...actions,
-                                    modal: {
-                                        open: true,
-                                        key: "entity-create",
-                                    },
+                                    modals: tmpModals,
                                 });
                             }
                         }}

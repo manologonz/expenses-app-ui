@@ -1,18 +1,38 @@
 import React, { useRef, useState } from "react";
 import BubbleQuantityInput from "./BubbleQuantityInput";
-import { Expense, ExpenseData, ExpenseErrors } from "@/utils/types";
+import {
+    ActionStatus,
+    Expense,
+    ExpenseData,
+    ExpenseErrors,
+    ServiceResponse,
+} from "@/utils/types";
 import TextField from "./TextField";
-import SelectField from "./SelectField";
-import InteractiveModal from "../common/InteractiveModal";
 import { useCrudActions } from "../state/CrudActions.state";
-import { Button } from "@/components/forms/Button";
+import { Button, InputButton } from "@/components/forms/Button";
 import z, { treeifyError } from "zod";
+import ExpensesLocalService from "@/utils/api/expenses";
+import InteractiveModal from "../common/InteractiveModal";
+import TagSelection from "./TagSelection";
 
 type Props = {
     data?: Expense;
+    isEdit?: boolean;
+    closeOnSave?: boolean;
+    onSave?: (expense?: Expense) => void;
+    onDelete?: (expense?: Expense) => void;
+    expenseData?: Omit<Expense, "updatedAt, createdAt">;
+    title?: string;
+    modalId?: string;
 };
 
-const ExpenseForm: React.FC<Props> = ({ data }) => {
+const ExpenseForm: React.FC<Props> = ({
+    data,
+    title,
+    closeOnSave,
+    onSave,
+    modalId,
+}) => {
     const [actions, setAction] = useCrudActions();
     const [expense, setExpense] = useState<ExpenseData>({
         amount: 0,
@@ -24,12 +44,15 @@ const ExpenseForm: React.FC<Props> = ({ data }) => {
         description: [],
         tags: [],
     });
+    const [status, setStatus] = useState<ActionStatus>(ActionStatus.NONE);
 
     if (!setAction) {
         return;
     }
 
     const onMount = useRef(false);
+
+    const expenseService = new ExpensesLocalService();
 
     if (!onMount.current) {
         useState(data);
@@ -41,8 +64,12 @@ const ExpenseForm: React.FC<Props> = ({ data }) => {
         e.preventDefault();
 
         const expenseValidator = z.object({
-            amount: z.number(),
-            description: z.string(),
+            amount: z
+                .number()
+                .gt(0, { message: "Value must be greated than 0" }),
+            description: z
+                .string()
+                .min(1, { message: "This field is required" }),
             tags: z.array(
                 z.object({
                     id: z.number(),
@@ -68,28 +95,73 @@ const ExpenseForm: React.FC<Props> = ({ data }) => {
 
             return;
         }
+
+        saveData(expense);
+    };
+
+    const saveData = async (data: ExpenseData) => {
+        setStatus(ActionStatus.LOADING);
+
+        let response: ServiceResponse<Expense>;
+
+        response = await expenseService.createExpense(data);
+
+        if (!response?.ok) {
+            setStatus(ActionStatus.ERROR);
+        } else {
+            setStatus(ActionStatus.SUCCESS);
+
+            if (closeOnSave) {
+                setAction({
+                    ...actions,
+                    modals: {
+                        ...actions.modals,
+                        [modalId || "entity-create"]: false,
+                    },
+                });
+            }
+
+            if (onSave) {
+                onSave(response.data);
+            }
+        }
+
+        return response.data;
     };
 
     return (
         <div>
+            <div className="border-b border-white pb-2 mb-5">
+                <h2 className="text-white uppercase font-bold">
+                    {title || "New expense"}
+                </h2>
+            </div>
             <form onSubmit={handleSubmit}>
                 <div className="mb-10">
                     <BubbleQuantityInput
+                        errors={errors.amount}
                         value={expense.amount}
                         onChange={(e) => {
                             setExpense({
                                 ...expense,
-                                amount: parseFloat(e.target.value),
+                                amount: parseFloat(e.target.value) || 0,
                             });
+                            if (errors.amount.length) {
+                                setErrors({ ...errors, amount: [] });
+                            }
                         }}
                         name="Amount"
                         label="Amount"
                     />
                 </div>
                 <TextField
+                    errors={errors.description}
                     type="text"
                     onChange={(e) => {
                         setExpense({ ...expense, description: e.target.value });
+                        if (errors.description.length) {
+                            setErrors({ ...errors, description: [] });
+                        }
                     }}
                     name="description"
                     label="Description"
@@ -97,22 +169,38 @@ const ExpenseForm: React.FC<Props> = ({ data }) => {
                     inputClass="bg-white"
                     value={expense.description}
                 />
-            </form>
-            <div className="border-t border-white mt-10 pt-5">
-                <div className="w-ful text-white text-center">
-                    {!!expense.tags ? "No tags" : ""}
+                <div className="border-t border-white mt-10 pt-5">
+                    <div className="w-ful text-white text-center">
+                        {!!expense.tags ? "No tags" : ""}
+                    </div>
                 </div>
-            </div>
-            <div className="w-full mt-2 flex justify-center">
-                <Button
-                    full
-                    variation="yellowbutter"
-                    text="Mange tags"
-                    onClick={() => {
-                        console.log("Clicked");
+                <div className="w-full mt-2 flex justify-center">
+                    <Button
+                        variation="yellowbutter"
+                        text="Mange tags"
+                        onClick={() => {
+                            setAction({
+                                ...actions,
+                                modals: {
+                                    ...actions.modals,
+                                    "manage-tags": true,
+                                },
+                            });
+                        }}
+                    />
+                </div>
+                <div className="w-full mt-3">
+                    <InputButton full variation="greenjade" text="Save" />
+                </div>
+            </form>
+
+            <InteractiveModal modalKey="manage-tags">
+                <TagSelection
+                    onTagSelction={(tags) => {
+                        console.log(tags);
                     }}
                 />
-            </div>
+            </InteractiveModal>
         </div>
     );
 };

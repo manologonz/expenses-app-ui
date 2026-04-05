@@ -54,9 +54,11 @@ const TagPage: React.FC<Props> = ({ params }) => {
                         </div>
                         <Button
                             onClick={() => {
+                                const tmpModals = { ...actions.modals };
+                                tmpModals["edit-tag"] = true;
                                 setActions({
                                     ...actions,
-                                    modal: { open: true, key: "edit-tag" },
+                                    modals: tmpModals,
                                 });
                             }}
                             text="Edit details"
@@ -75,12 +77,13 @@ const TagPage: React.FC<Props> = ({ params }) => {
                                           <button
                                               onClick={() => {
                                                   setSubtag(subtag);
+                                                  const tmpModals = {
+                                                      ...actions.modals,
+                                                  };
+                                                  tmpModals["subtag"] = true;
                                                   setActions({
                                                       ...actions,
-                                                      modal: {
-                                                          open: true,
-                                                          key: "subtag",
-                                                      },
+                                                      modals: tmpModals,
                                                   });
                                               }}
                                               key={subtag.id}
@@ -93,9 +96,13 @@ const TagPage: React.FC<Props> = ({ params }) => {
                                 : null}
                             <button
                                 onClick={() => {
+                                    const tmpModals = {
+                                        ...actions.modals,
+                                    };
+                                    tmpModals["subtag"] = true;
                                     setActions({
                                         ...actions,
-                                        modal: { open: true, key: "subtag" },
+                                        modals: tmpModals,
                                     });
                                 }}
                                 type="button"

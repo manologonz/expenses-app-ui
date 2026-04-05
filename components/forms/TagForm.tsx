@@ -86,9 +86,11 @@ const TagForm: React.FC<Props> = ({
             setStatus(ActionStatus.SUCCESS);
 
             if (closeOnSave) {
+                const tempModals = { ...actions.modals };
+                tempModals[modalId || "edit-tag"] = false;
                 setActions({
                     ...actions,
-                    modal: { open: false, key: modalId || "edit-tag" },
+                    modals: tempModals,
                 });
             }
 
@@ -115,9 +117,11 @@ const TagForm: React.FC<Props> = ({
             setStatus(ActionStatus.SUCCESS);
 
             if (closeOnSave) {
+                const tempModals = { ...actions.modals };
+                tempModals[modalId || "edit-tag"] = false;
                 setActions({
                     ...actions,
-                    modal: { open: false, key: modalId || "edit-tag" },
+                    modals: tempModals,
                 });
             }
 

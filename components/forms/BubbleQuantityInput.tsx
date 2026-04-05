@@ -1,5 +1,6 @@
 import React from "react";
 import FieldLabel from "./FieldLabel";
+import ErrorBox from "./ErrorBox";
 
 type Props = {
     onChange: React.ChangeEventHandler<HTMLInputElement>;
@@ -7,6 +8,7 @@ type Props = {
     id?: string;
     name: string;
     label: string;
+    errors?: string[];
 };
 
 const BubbleQuantityInput: React.FC<Props> = ({
@@ -15,9 +17,10 @@ const BubbleQuantityInput: React.FC<Props> = ({
     label,
     name,
     id,
+    errors,
 }) => {
     return (
-        <div className="flex py-2.5 w-full justify-center">
+        <div className="flex flex-col py-2.5 w-full items-center">
             <FieldLabel
                 htmlFor={id || "input-" + name}
                 hidden={true}
@@ -31,6 +34,7 @@ const BubbleQuantityInput: React.FC<Props> = ({
                 value={value}
                 onChange={onChange}
             />
+            {!!errors?.length && <ErrorBox errors={errors} />}
         </div>
     );
 };

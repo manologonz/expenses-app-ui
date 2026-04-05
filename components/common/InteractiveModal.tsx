@@ -23,11 +23,11 @@ const InteractiveModal: React.FC<Props> = ({ children, modalKey }) => {
         return () => {
             document.body.style.overflow = "";
         };
-    }, [actions?.modal?.open]);
+    }, [actions?.modals]);
 
     return (
         <AnimatePresence>
-            {!!actions?.modal?.open && actions.modal.key === modalKey && (
+            {!!actions?.modals[modalKey] && (
                 // Validate for animation
                 <motion.div className="h-screen w-full absolute left-0 bottom-0 bg-transparent flex items-end transition-all">
                     <motion.div
@@ -46,12 +46,12 @@ const InteractiveModal: React.FC<Props> = ({ children, modalKey }) => {
                                 type="button"
                                 className="cursor-pointer"
                                 onClick={() => {
+                                    const tempModals = { ...actions.modals };
+                                    tempModals[modalKey] = false;
+
                                     setActions({
                                         ...actions,
-                                        modal: {
-                                            open: false,
-                                            key: modalKey,
-                                        },
+                                        modals: tempModals,
                                     });
                                 }}
                             >
