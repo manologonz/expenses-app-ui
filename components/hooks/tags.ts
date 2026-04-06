@@ -91,6 +91,12 @@ export function useTagList(options?: TagListOptions) {
     };
 }
 
+export function usePlainTagList(options?: TagListOptions) {
+    return {
+        data: [],
+    };
+}
+
 export function useTagItem(tagId: number) {
     const [deleteLoading, setDeleteLoading] = useState(false);
     const tagService = new TagLocalService();

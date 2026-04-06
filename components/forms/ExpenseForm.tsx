@@ -193,7 +193,6 @@ const ExpenseForm: React.FC<Props> = ({
                     <InputButton full variation="greenjade" text="Save" />
                 </div>
             </form>
-
             <InteractiveModal modalKey="manage-tags">
                 <TagSelection
                     onTagSelction={(tags) => {

@@ -81,4 +81,5 @@ export enum ActionStatus {
 
 export type TagListOptions = {
     depth?: "all";
+    limit?: number;
 };
