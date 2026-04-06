@@ -60,6 +60,7 @@ const Tags: React.FC<Props> = ({}) => {
             </div>
             <InteractiveModal modalKey="entity-create">
                 <TagForm
+                    modalId="entity-create"
                     closeOnSave
                     onSave={() => {
                         mutate();
